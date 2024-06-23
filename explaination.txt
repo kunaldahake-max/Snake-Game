@@ -1,0 +1,141 @@
+// Game Functions
+/*window.requestAnimationFrame(main): This line requests the browser to call the main function repeatedly before the next repaint. 
+This effectively creates a game loop that runs as fast as the browser's repaint rate, typically 60 frames per second.
+
+if ((ctime - lastPaintTime) / 1000 < 1 / speed): This condition checks if enough time has passed since the last game update. 
+The ctime parameter represents the current time, and lastPaintTime is a variable that stores the time of the last game update. The expression (ctime - lastPaintTime) / 1000 calculates the time elapsed since the last game update in seconds. 1 / speed calculates the minimum time required between game updates based on the speed variable (which controls the game's frame rate). 
+If the elapsed time is less than the minimum time required for an update, the function returns, effectively skipping this frame update.
+
+lastPaintTime = ctime: If the condition in the previous step is not met, the current time ctime is assigned to lastPaintTime, 
+ensuring that the time difference between frames is calculated accurately in the next frame.
+
+gameEngine(): This function is called to update the game state and render the game elements on the screen.
+
+Overall, the main function ensures that the game loop runs at a controlled frame rate defined by the speed variable. 
+It prevents the game from running too fast and provides a consistent and smooth gaming experience for the player. The game loop continuously updates the game state and renders it on the screen, creating the illusion of animation and interactivity in the game.
+*/
+------------------------------
+
+/**The isCollide function checks for two collision conditions in the Snake game:
+
+If the snake collides with itself: It iterates through the snakeArr array (representing the snake's body),
+ starting from index 1 (skipping the head) and checks if any of the body segments have the same x and y coordinates as the head.
+  If such a collision is detected, the function returns true, indicating that the snake has collided with itself.
+
+If the snake collides with the wall: It checks if the head of the snake (snake[0]) has x or y coordinates outside the boundary of the game board,
+ which is represented as a grid of size 18x18 (assuming the grid starts at 1 and goes up to 18). 
+ If the head's coordinates are outside this range, the function returns true, indicating that the snake has collided with the wall.
+
+If neither of these collision conditions is met, the function returns false, indicating that there is no collision.
+
+This function is crucial for detecting collisions in the game, whether it's the snake colliding with itself or hitting the wall. 
+When a collision is detected, the game will trigger a "Game Over" scenario and reset the necessary variables to start a new game. */
+
+
+
+------------------------------
+
+The `gameEngine` function is responsible for updating the game state, specifically, 
+the snake's movement, checking for collisions, handling game over scenarios, and updating the score.
+
+Let's understand the different parts of the `gameEngine` function:
+
+1. `if(isCollide(snakeArr))`: This condition checks if the snake has collided with itself or the wall.
+ The `isCollide` function is called with the `snakeArr` as an argument to check for collisions. If a collision is detected, the code inside this condition block is executed.
+
+2. `gameOverSound.play()`: When a collision is detected, the game over sound is played.
+
+3. `musicSound.pause()`: The background music is paused to stop playing the game's background music during the game over phase.
+
+4. `inputDir =  {x: 0, y: 0};`: The `inputDir` variable is reset to `{x: 0, y: 0}` to stop the snake's movement when the game is over. This effectively freezes the snake.
+
+5. `alert("Game Over. Press any key to play again!")`: An alert box is shown to inform the player that the game is over and prompts them to press any key to play again.
+
+6. `snakeArr = [{x: 13, y: 15}];`: After the game over alert, the `snakeArr` is reset with a single element, positioning the snake's head at coordinates `{x: 13, y: 15}`. 
+This is the starting position for the snake in a new game.
+
+7. `musicSound.play()`: The background music is resumed, so it starts playing again when the game is restarted.
+
+8. `score = 0;`: The `score` variable is reset to 0, as the game is starting over.
+
+After this part of the `gameEngine` function, the code moves on to update the snake's movement, check for food consumption, and update the score, 
+as shown in the rest of the code in your previous message. The function handles all the game mechanics and logic required to run the Snake game smoothly and interactively.
+--
+food conumption and score update
+The first part of this code checks if the snake's head (snakeArr[0]) has the same x and y coordinates as the food. 
+If so, it means the snake has consumed the food, and the condition evaluates to true.
+
+When the snake consumes the food, the following actions occur:
+
+The foodSound is played to provide feedback to the player that the snake has eaten the food.
+The score variable is incremented by 1.
+If the current score is higher than the hiscoreval, the high score is updated, and the updated value 
+is stored in the browser's local storage using localStorage.setItem.
+The display of the high score (hiscoreBox) and current score (scoreBox) is updated to reflect the changes.
+A new body segment is added to the front of the snakeArr, representing the snake growing after consuming the food. 
+The new segment's position is calculated by adding the x and y components of the inputDir (the current direction of the snake) 
+to the current position of the snake's head.
+After updating the score and adding a new segment to the snake, a new position for the food is generated within the game board.
+ The variables a and b define the range in which the food's x and y coordinates can be generated (between 2 and 16 inclusive). 
+ The food object is then updated with new random coordinates within this range.
+ --
+ The code you provided is a part of the `gameEngine` function. Let's break down the different sections of this code:
+
+--
+
+2. Moving the Snake:
+   
+   - This part of the code is responsible for moving the snake. It shifts the elements of the `snakeArr` array to mimic the snake's movement.
+   - Starting from the second-to-last element of `snakeArr`, each element is assigned the same position as the element before it, effectively shifting all body segments 
+   one position forward in the array.
+   - After updating the rest of the body, the head of the snake (the first element of `snakeArr`) is moved in the direction specified by `inputDir`. 
+   The snake's head moves by adding the `x` and `y` components of `inputDir` to its current position.
+--
+
+3. Displaying the Snake and Food:
+   
+
+   - This part of the code is responsible for displaying the snake and the food on the game board.
+   - First, it clears the entire `board` element to remove any previous snake and food elements.
+   - It then iterates through the `snakeArr`, creating `div` elements for each body segment of the snake. The `div` elements are positioned on the game board according to their `x` and `y` coordinates in the grid.
+   - The head of the snake is given a CSS class named `'head'`, while the rest of the body segments are given a class named `'snake'`. This allows different styling to be applied to the head and body segments using CSS.
+   - Similarly, a `div` element is created for the food (`foodElement`) and positioned on the board according to its `x` and `y` coordinates.
+   - The `foodElement` is given the CSS class `'food'`, which allows it to be styled differently from the snake elements.
+
+By combining all these parts in the `gameEngine` function and repeatedly calling it within the `main` function through the game loop, the Snake game runs smoothly, updating the game state, displaying the snake and food, handling collisions, and keeping track of the player's score.
+------------------------------
+
+
+This is the main logic for starting the Snake game, initializing variables, and setting up event listeners to control the snake's movement.
+
+Let's break down the main logic step by step:
+
+1. `musicSound.play()`: This line plays the background music when the game starts.
+
+2. `let hiscore = localStorage.getItem("hiscore")`: This retrieves the high score value from the browser's local storage (if it exists) and stores
+ it in the variable `hiscore`.
+
+3. The next part checks if the high score (`hiscore`) is null (i.e., not set). If it's null, it means there is no high score saved in the local storage. 
+In this case, it sets the `hiscoreval` variable to 0 and then saves it to the local storage using `localStorage.setItem`.
+
+4. If the high score (`hiscore`) is not null, it means there is a high score saved in the local storage. In this case, 
+it parses the value from JSON format and stores it in the `hiscoreval` variable. Additionally, it updates the `hiscoreBox` element's content to display the
+ high score on the screen.
+
+5. `window.requestAnimationFrame(main)`: This line initiates the game loop by calling the `main` function, which controls the continuous execution of the game engine logic.
+
+6. `window.addEventListener('keydown', e => {...})`: This sets up an event listener for keydown events, which will be used to control the snake's movement.
+ When a key is pressed, the function inside the event listener is executed.
+
+7. Inside the event listener function, the `inputDir` variable is set to `{x: 0, y: 1}`, 
+which means the snake will start moving downwards (positive `y` direction) when the game begins. This sets the initial direction of the snake.
+
+8. `moveSound.play()`: When any key is pressed, this line plays a sound effect, providing audio feedback to the player that the snake is moving.
+
+9. The event listener uses a switch statement to handle different arrow key presses
+ (`ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`) and sets the `inputDir` accordingly to change the direction of the snake. For example, 
+ if the player presses the "ArrowUp" key, the `inputDir` is set to `{x: 0, y: -1}`, which means the snake will start moving upwards (negative `y` direction).
+
+With these main logic components, the Snake game is ready to be played. The background music starts playing,
+ the high score is retrieved from local storage or set to 0 if it doesn't exist, and event listeners are set up to control the snake's movement. 
+ The game loop (`main` function) will continuously update and render the game state, and the player can control the snake using arrow keys.
